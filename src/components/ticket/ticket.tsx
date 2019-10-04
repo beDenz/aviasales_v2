@@ -1,8 +1,12 @@
 import React, { ReactElement } from "react";
-import "./ticket.scss";
-import { ITicketPropsItem } from "../../App";
-import { Ifilters } from "../../App";
+import { ITicketPropsItem, Ifilters } from "../../App";
 import Loader from "../loader/loader";
+import "./ticket.scss";
+import {
+  getFormattedPrice,
+  getFormattedDate,
+  getTimeOfFlight
+} from "../../service/utility";
 
 export interface ITicketProps {
   apiState: ITicketPropsItem[] | undefined;
@@ -60,6 +64,7 @@ export const Ticket: React.FC<ITicketProps> = (props): ReactElement => {
         return incomingArray;
     }
   };
+  /*
   const getFormattedPrice = (value: number) => {
     // Формат ценны
     return (
@@ -68,6 +73,7 @@ export const Ticket: React.FC<ITicketProps> = (props): ReactElement => {
       </span>
     );
   };
+  
   const getFormattedDate = (departureDate: Date, duration: number) => {
     // Функция вывода время вылета и прилета
     let temp = new Date(departureDate);
@@ -97,7 +103,7 @@ export const Ticket: React.FC<ITicketProps> = (props): ReactElement => {
       </span>
     );
   };
-
+*/
   return (
     <div>
       {props.apiState === undefined ? (
@@ -110,7 +116,7 @@ export const Ticket: React.FC<ITicketProps> = (props): ReactElement => {
               <div key={index} className="ticket">
                 <div className="ticket__header">
                   <h3 className="ticket__price">
-                    {getFormattedPrice(item.price)}
+                    {getFormattedPrice(item.price)} P
                   </h3>
                   <div className="ticket__logo">
                     <img

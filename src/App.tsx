@@ -8,13 +8,6 @@ import "./App.scss";
 import "./style.scss";
 
 // Interface
-export interface IstopsFilters {
-  all: boolean;
-  noStops: boolean;
-  oneStops: boolean;
-  twoStops: boolean;
-  threeStops: boolean;
-}
 
 export interface IfiltersItem {
   id: string;
@@ -25,10 +18,6 @@ export interface IfiltersItem {
 
 export interface Ifilters extends Array<IfiltersItem> {
   [index: number]: IfiltersItem;
-}
-
-export interface IEvenHandler {
-  onClick: (e: React.MouseEvent) => void;
 }
 
 export interface ITicketPropsItem {
@@ -45,6 +34,7 @@ export interface ITicketPropsItem {
 // End Interface
 
 const App: React.FC = () => {
+  // стейт для хранения массива обьектов(билетов)
   const [apiState, setApiState] = useState<ITicketPropsItem[] | undefined>(
     undefined
   );
@@ -85,24 +75,20 @@ const App: React.FC = () => {
   ]);
 
   useEffect((): void => {
-    fetch(aviasalesApi.API_SEARCH_AVIASALES)
+    // Получаем массив обьектов(билетов)
+    fetch(aviasalesApi.API_SEARCH_AVIASALES) // Вынести в отдельную функцию
       .then(responsive => responsive.json())
-      .then(responsive =>
-        fetch(aviasalesApi.API_SEARCH_TICKETS + `${responsive.searchId}`)
-          .then(data =>
-            data.status === 200 ? data.json() : setRequestApiError(true)
-          )
-          .then(data => setApiState(data.tickets))
-          .catch(err => console.log(err))
+      .then(
+        responsive =>
+          fetch(aviasalesApi.API_SEARCH_TICKETS + `${responsive.searchId}`)
+            .then(
+              data =>
+                data.status === 200 ? data.json() : setRequestApiError(true) //
+            )
+            .then(data => setApiState(data.tickets))
+            .catch(err => console.log(err)) // нужен ли здесь обработчик ошибок?
       );
-  }, [requestApiError]);
-
-  /*
-  if (apiState !== undefined) {
-    console.log(apiState);
-    console.log(filtres);
-  }
-  */
+  }, [requestApiError]); // при изменени стейта, делаем повторный запрос
 
   const changeTabsSort = (e: React.MouseEvent): void => {
     const target = e.target as HTMLElement;
@@ -148,8 +134,6 @@ const App: React.FC = () => {
               tabsSort={tabsSort}
               filtres={filtres}
               apiState={filterByStops(apiState, filtres)}
-              // apiState !== undefined ? filterByStops(apiState, filtres) : []
-              //}
             />
           </div>
         </div>
