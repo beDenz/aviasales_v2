@@ -5,6 +5,7 @@ import "./style.scss";
 import Logo from "./components/logo/logo";
 import Stopfiltres from "./components/stopfiltres/stopfiltres";
 import Tabs from "./components/tabs/tabs";
+import { Ticket } from "./components/ticket/ticket";
 
 // Interface
 export interface IstopsFilters {
@@ -28,13 +29,24 @@ export interface Ifilters extends Array<IfiltersItem> {
 export interface IEvenHandler {
   onClick: (e: React.MouseEvent) => void;
 }
+
+export interface ITicketPropsItem {
+  price: number;
+  carrier: string;
+  segments: {
+    date: Date;
+    destination: string;
+    duration: number;
+    origin: string;
+    stops: [string?, string?, string?];
+  }[];
+}
 // End Interface
 
 const App: React.FC = () => {
-  const [apiState, setApiState] = useState<any>(undefined); // Какой тип возвращаемого значение promise?
+  const [apiState, setApiState] = useState<any>(undefined);
   const [requestApiError, setRequestApiError] = useState<boolean>(false);
   const [tabsSort, setTabsSort] = useState<string | null>("price");
-
   const [filtres, setFiltres] = useState<Ifilters>([
     { id: `all`, status: true, title: `Без пересадок` },
     { id: `noStops`, status: true, title: `Без пересадок` },
@@ -51,7 +63,7 @@ const App: React.FC = () => {
           .then(data =>
             data.status === 200 ? data.json() : setRequestApiError(true)
           )
-          .then(data => setApiState(data))
+          .then(data => setApiState(data.tickets))
       );
   }, [requestApiError]);
 
@@ -66,7 +78,6 @@ const App: React.FC = () => {
     }
   };
 
-  console.log(tabsSort);
   return (
     <div>
       <div className="main">
@@ -75,6 +86,7 @@ const App: React.FC = () => {
           <Stopfiltres stopsFiltres={filtres} />
           <div className="result">
             <Tabs onClick={changeTabsSort} tabsSort={tabsSort} />
+            <Ticket apiState={apiState !== undefined ? apiState : []} />
           </div>
         </div>
       </div>
