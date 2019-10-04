@@ -2,9 +2,10 @@ import React, { ReactElement } from "react";
 import "./ticket.scss";
 import { ITicketPropsItem } from "../../App";
 import { Ifilters } from "../../App";
+import Loader from "../loader/loader";
 
 export interface ITicketProps {
-  apiState: ITicketPropsItem[];
+  apiState: ITicketPropsItem[] | undefined;
   tabsSort: string | null;
   filtres: Ifilters;
 }
@@ -99,89 +100,95 @@ export const Ticket: React.FC<ITicketProps> = (props): ReactElement => {
 
   return (
     <div>
-      {sortTicketsByTabs(props.apiState, props.tabsSort)
-        .slice(0, 5)
-        .map((item: ITicketPropsItem, index: number) => {
-          return (
-            <div key={index} className="ticket">
-              <div className="ticket__header">
-                <h3 className="ticket__price">
-                  {getFormattedPrice(item.price)}
-                </h3>
-                <div className="ticket__logo">
-                  <img
-                    src={`//pics.avs.io/99/36/${item.carrier}.png`}
-                    alt="air logo"
-                  />
+      {props.apiState === undefined ? (
+        <Loader />
+      ) : props.apiState.length !== 0 ? (
+        sortTicketsByTabs(props.apiState, props.tabsSort)
+          .slice(0, 5)
+          .map((item: ITicketPropsItem, index: number) => {
+            return (
+              <div key={index} className="ticket">
+                <div className="ticket__header">
+                  <h3 className="ticket__price">
+                    {getFormattedPrice(item.price)}
+                  </h3>
+                  <div className="ticket__logo">
+                    <img
+                      src={`//pics.avs.io/99/36/${item.carrier}.png`}
+                      alt="air logo"
+                    />
+                  </div>
+                </div>
+                <div className="ticket__way">
+                  <div className="ticket__route">
+                    <h4 className="ticket__title">
+                      {item.segments[0].origin} - {item.segments[0].destination}
+                    </h4>
+                    <p className="ticket__descr">
+                      {getFormattedDate(
+                        item.segments[0].date,
+                        item.segments[0].duration
+                      )}
+                    </p>
+                  </div>
+                  <div className="ticket__lenght">
+                    <h4 className="ticket__title">В пути</h4>
+                    <p className="ticket__descr">
+                      {getTimeOfFlight(item.segments[0].duration)}
+                    </p>
+                  </div>
+                  <div className="ticket__stops">
+                    <h4 className="ticket__title">
+                      {
+                        props.filtres[item.segments[0].stops.length + 1]
+                          .titleForTicket
+                      }
+                    </h4>
+                    <p className="ticket__descr">
+                      {item.segments[0].stops.length !== 0
+                        ? item.segments[0].stops.toString()
+                        : "Прямой"}
+                    </p>
+                  </div>
+                </div>
+                <div className="ticket__way">
+                  <div className="ticket__route">
+                    <h4 className="ticket__title">
+                      {item.segments[1].destination} - {item.segments[1].origin}
+                    </h4>
+                    <p className="ticket__descr">
+                      {getFormattedDate(
+                        item.segments[1].date,
+                        item.segments[1].duration
+                      )}
+                    </p>
+                  </div>
+                  <div className="ticket__lenght">
+                    <h4 className="ticket__title">В пути</h4>
+                    <p className="ticket__descr">
+                      {getTimeOfFlight(item.segments[1].duration)}
+                    </p>
+                  </div>
+                  <div className="ticket__stops">
+                    <h4 className="ticket__title">
+                      {
+                        props.filtres[item.segments[1].stops.length + 1]
+                          .titleForTicket
+                      }
+                    </h4>
+                    <p className="ticket__descr">
+                      {item.segments[1].stops.length !== 0
+                        ? item.segments[1].stops.toString()
+                        : "Прямой"}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="ticket__way">
-                <div className="ticket__route">
-                  <h4 className="ticket__title">
-                    {item.segments[0].origin} - {item.segments[0].destination}
-                  </h4>
-                  <p className="ticket__descr">
-                    {getFormattedDate(
-                      item.segments[0].date,
-                      item.segments[0].duration
-                    )}
-                  </p>
-                </div>
-                <div className="ticket__lenght">
-                  <h4 className="ticket__title">В пути</h4>
-                  <p className="ticket__descr">
-                    {getTimeOfFlight(item.segments[0].duration)}
-                  </p>
-                </div>
-                <div className="ticket__stops">
-                  <h4 className="ticket__title">
-                    {
-                      props.filtres[item.segments[0].stops.length + 1]
-                        .titleForTicket
-                    }
-                  </h4>
-                  <p className="ticket__descr">
-                    {item.segments[0].stops.length !== 0
-                      ? item.segments[0].stops.toString()
-                      : "Прямой"}
-                  </p>
-                </div>
-              </div>
-              <div className="ticket__way">
-                <div className="ticket__route">
-                  <h4 className="ticket__title">
-                    {item.segments[1].destination} - {item.segments[1].origin}
-                  </h4>
-                  <p className="ticket__descr">
-                    {getFormattedDate(
-                      item.segments[1].date,
-                      item.segments[1].duration
-                    )}
-                  </p>
-                </div>
-                <div className="ticket__lenght">
-                  <h4 className="ticket__title">В пути</h4>
-                  <p className="ticket__descr">
-                    {getTimeOfFlight(item.segments[1].duration)}
-                  </p>
-                </div>
-                <div className="ticket__stops">
-                  <h4 className="ticket__title">
-                    {
-                      props.filtres[item.segments[1].stops.length + 1]
-                        .titleForTicket
-                    }
-                  </h4>
-                  <p className="ticket__descr">
-                    {item.segments[1].stops.length !== 0
-                      ? item.segments[1].stops.toString()
-                      : "Прямой"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+      ) : (
+        <div className="no-tickets">Билетов нет</div>
+      )}
     </div>
   );
 };

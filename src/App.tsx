@@ -97,19 +97,21 @@ const App: React.FC = () => {
       );
   }, [requestApiError]);
 
+  /*
   if (apiState !== undefined) {
     console.log(apiState);
     console.log(filtres);
   }
+  */
 
-  const changeTabsSort = (e: React.MouseEvent) => {
+  const changeTabsSort = (e: React.MouseEvent): void => {
     const target = e.target as HTMLElement;
     if (!target.classList.contains("active")) {
       setTabsSort(target.getAttribute("type"));
     }
   };
 
-  const onClickStops = (e: React.MouseEvent) => {
+  const onClickStops = (e: React.MouseEvent): void => {
     // обработчик нажатия на фильтры выбора количества остановок
     const target = e.target as HTMLElement;
     const chosenOption = target.getAttribute("type");
@@ -121,10 +123,10 @@ const App: React.FC = () => {
   };
 
   const filterByStops = (
-    incomingArray: ITicketPropsItem[],
+    incomingArray: ITicketPropsItem[] | undefined,
     filtres: Ifilters
-  ): ITicketPropsItem[] => {
-    if (incomingArray === undefined) return [];
+  ): ITicketPropsItem[] | undefined => {
+    if (incomingArray === undefined) return undefined;
     if (filtres[0].id === `all` && filtres[0].status) return incomingArray;
 
     const stopOptions: boolean[] = filtres.slice(1, 5).map(item => item.status);
@@ -145,9 +147,9 @@ const App: React.FC = () => {
             <Ticket
               tabsSort={tabsSort}
               filtres={filtres}
-              apiState={
-                apiState !== undefined ? filterByStops(apiState, filtres) : []
-              }
+              apiState={filterByStops(apiState, filtres)}
+              // apiState !== undefined ? filterByStops(apiState, filtres) : []
+              //}
             />
           </div>
         </div>
