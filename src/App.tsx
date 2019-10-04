@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { aviasalesApi } from "./api/api";
-import "./App.scss";
-import "./style.scss";
+import { Ticket } from "./components/ticket/ticket";
 import Logo from "./components/logo/logo";
 import Stopfiltres from "./components/stopfiltres/stopfiltres";
 import Tabs from "./components/tabs/tabs";
-import { Ticket } from "./components/ticket/ticket";
+import "./App.scss";
+import "./style.scss";
 
 // Interface
 export interface IstopsFilters {
@@ -19,7 +19,8 @@ export interface IstopsFilters {
 export interface IfiltersItem {
   id: string;
   status: boolean;
-  title: string;
+  titleForFilter: string;
+  titleForTicket: string;
 }
 
 export interface Ifilters extends Array<IfiltersItem> {
@@ -44,15 +45,43 @@ export interface ITicketPropsItem {
 // End Interface
 
 const App: React.FC = () => {
-  const [apiState, setApiState] = useState<any>(undefined);
+  const [apiState, setApiState] = useState<ITicketPropsItem[] | undefined>(
+    undefined
+  );
   const [requestApiError, setRequestApiError] = useState<boolean>(false);
   const [tabsSort, setTabsSort] = useState<string | null>("price");
   const [filtres, setFiltres] = useState<Ifilters>([
-    { id: `all`, status: true, title: `Без пересадок` },
-    { id: `noStops`, status: true, title: `Без пересадок` },
-    { id: `oneStops`, status: true, title: `Одна пересадка` },
-    { id: `twoStops`, status: true, title: `Две Пересадки` },
-    { id: `threeStops`, status: true, title: `Три пересадки` }
+    {
+      id: `all`,
+      status: true,
+      titleForFilter: `Все`,
+      titleForTicket: `Пересадки`
+    },
+    {
+      id: `noStops`,
+      status: true,
+      titleForFilter: `Без пересадок`,
+      titleForTicket: `Пересадки`
+    },
+    {
+      id: `oneStops`,
+      status: true,
+      titleForFilter: `1 пересадка`,
+      titleForTicket: `1 пересадка`
+    },
+    {
+      id: `twoStops`,
+      status: true,
+      titleForFilter: `2 Пересадки`,
+      titleForTicket: `2 Пересадки`
+    },
+    {
+      id: `threeStops`,
+      status: true,
+      titleForFilter: `3 пересадки`,
+      titleForTicket: `3 пересадки`
+    }
+    // { id: `all`, status: true, title: `Пересадки` }
   ]);
 
   useEffect((): void => {
@@ -64,11 +93,13 @@ const App: React.FC = () => {
             data.status === 200 ? data.json() : setRequestApiError(true)
           )
           .then(data => setApiState(data.tickets))
+          .catch(err => console.log(err))
       );
   }, [requestApiError]);
 
   if (apiState !== undefined) {
-    // console.log(apiState);
+    console.log(apiState);
+    console.log(filtres);
   }
 
   const changeTabsSort = (e: React.MouseEvent) => {
@@ -78,15 +109,46 @@ const App: React.FC = () => {
     }
   };
 
+  const onClickStops = (e: React.MouseEvent) => {
+    // обработчик нажатия на фильтры выбора количества остановок
+    const target = e.target as HTMLElement;
+    const chosenOption = target.getAttribute("type");
+    setFiltres(
+      filtres.map(item =>
+        item.id === chosenOption ? { ...item, status: !item.status } : item
+      )
+    );
+  };
+
+  const filterByStops = (
+    incomingArray: ITicketPropsItem[],
+    filtres: Ifilters
+  ): ITicketPropsItem[] => {
+    if (incomingArray === undefined) return [];
+    if (filtres[0].id === `all` && filtres[0].status) return incomingArray;
+
+    const stopOptions: boolean[] = filtres.slice(1, 5).map(item => item.status);
+
+    return incomingArray.filter(item =>
+      item.segments.every(segment => stopOptions[segment.stops.length])
+    );
+  };
+
   return (
     <div>
       <div className="main">
         <Logo />
         <div className="main__inner">
-          <Stopfiltres stopsFiltres={filtres} />
+          <Stopfiltres onClick={onClickStops} stopsFiltres={filtres} />
           <div className="result">
             <Tabs onClick={changeTabsSort} tabsSort={tabsSort} />
-            <Ticket apiState={apiState !== undefined ? apiState : []} />
+            <Ticket
+              tabsSort={tabsSort}
+              filtres={filtres}
+              apiState={
+                apiState !== undefined ? filterByStops(apiState, filtres) : []
+              }
+            />
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
-import React, { ReactElement, useCallback } from "react";
-import { IstopsFilters } from "../../App";
+import React, { ReactElement } from "react";
 import { Ifilters, IfiltersItem } from "../../App";
 import "./filters.scss";
 
 interface IProps {
   stopsFiltres: Ifilters;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 const Stopfiltres: React.FC<IProps> = (props): ReactElement => {
@@ -20,7 +20,9 @@ const Stopfiltres: React.FC<IProps> = (props): ReactElement => {
             defaultChecked={item.status}
             hidden
           />
-          <label htmlFor={item.id}>{item.title}</label>
+          <label htmlFor={item.id} type={item.id} onClick={props.onClick}>
+            {item.titleForFilter}
+          </label>
         </div>
       ))}
     </div>
@@ -28,18 +30,3 @@ const Stopfiltres: React.FC<IProps> = (props): ReactElement => {
 };
 
 export default Stopfiltres;
-
-/*
-
-{props.stopsFiltres.map(
-        (
-          item: { id: string; status: boolean; title: string },
-          index: number
-        ) => (
-          <div className="filters__item">
-            <input type="checkbox" name="all" id="all" hidden />>
-            <label htmlFor="all">Все</label>
-          </div>
-        )
-      )}
-      */
