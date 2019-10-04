@@ -1,0 +1,109 @@
+.ticket {
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 20px 50px 20px 20px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    &__price {
+
+        font-size: 24px;
+        line-height: 24px;
+        color: #2196F3;
+    }
+
+    &__way {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    &__logo {
+        font-size: 0;
+
+        img {
+            max-width: 100px;
+        }
+    }
+
+    &__title {
+        font-size: 12px;
+        line-height: 18px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #A0B0B9;
+    }
+
+    &__descr {
+        font-size: 14px;
+        line-height: 21px;
+        font-weight: 600;
+
+        color: #4A4A4A;
+    }
+
+    &__route {
+        min-width: 92px;
+    }
+
+    &__lenght {
+        min-width: 63px;
+    }
+
+    &__stops {
+        min-width: 92px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+
+    .lds-dual-ring {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+    }
+
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 46px;
+        height: 46px;
+        margin: 1px;
+        border-radius: 50%;
+        border: 5px solid #2196F3;
+        border-color: #2196F3 transparent #2196F3 transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+    @keyframes lds-dual-ring {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+.no-tickets {
+    display: block;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    text-align: center;
+    font-weight: 600px;
+}

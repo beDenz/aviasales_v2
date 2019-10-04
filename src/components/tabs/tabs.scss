@@ -1,0 +1,28 @@
+.tabs {
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    user-select: none;
+
+    &__item {
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        background: #FFFFFF;
+        color: black;
+        padding: 15px 66px;
+        cursor: url('cursor.png'), pointer;
+
+    }
+
+    .active {
+        background: #2196F3;
+        color: #fff;
+    }
+}
