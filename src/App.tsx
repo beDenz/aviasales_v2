@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { aviasalesApi } from "./api/api";
 import { Ticket } from "./components/ticket/ticket";
 import Logo from "./components/logo/logo";
@@ -90,23 +90,28 @@ const App: React.FC = () => {
       );
   }, [requestApiError]); // при изменени стейта, делаем повторный запрос
 
-  const changeTabsSort = (e: React.MouseEvent): void => {
+  const changeTabsSort = useCallback((e: React.MouseEvent): void => {
     const target = e.target as HTMLElement;
+    console.log("tabs");
     if (!target.classList.contains("active")) {
       setTabsSort(target.getAttribute("type"));
     }
-  };
+  }, []);
 
-  const onClickStops = (e: React.MouseEvent): void => {
-    // обработчик нажатия на фильтры выбора количества остановок
-    const target = e.target as HTMLElement;
-    const chosenOption = target.getAttribute("type");
-    setFiltres(
-      filtres.map(item =>
-        item.id === chosenOption ? { ...item, status: !item.status } : item
-      )
-    );
-  };
+  const onClickStops = useCallback(
+    (e: React.MouseEvent): void => {
+      // обработчик нажатия на фильтры выбора количества остановок
+      const target = e.target as HTMLElement;
+      const chosenOption = target.getAttribute("type");
+      console.log("stops");
+      setFiltres(
+        filtres.map(item =>
+          item.id === chosenOption ? { ...item, status: !item.status } : item
+        )
+      );
+    },
+    [filtres]
+  );
 
   const filterByStops = (
     incomingArray: ITicketPropsItem[] | undefined,
@@ -123,19 +128,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="main">
-        <Logo />
-        <div className="main__inner">
-          <Stopfiltres onClick={onClickStops} stopsFiltres={filtres} />
-          <div className="result">
-            <Tabs onClick={changeTabsSort} tabsSort={tabsSort} />
-            <Ticket
-              tabsSort={tabsSort}
-              filtres={filtres}
-              apiState={filterByStops(apiState, filtres)}
-            />
-          </div>
+    <div className="main">
+      <Logo />
+      <div className="main__inner">
+        <Stopfiltres onClick={onClickStops} stopsFiltres={filtres} />
+        <div className="result">
+          <Tabs onClick={changeTabsSort} tabsSort={tabsSort} />
+          <Ticket
+            tabsSort={tabsSort}
+            filtres={filtres}
+            apiState={filterByStops(apiState, filtres)}
+          />
         </div>
       </div>
     </div>
