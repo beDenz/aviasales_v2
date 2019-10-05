@@ -1,6 +1,8 @@
 # Aviasales v2
 
-React / TypeScript
+React / TypeScript / SASS
+
+Релиз: https://bedenz.github.io/aviasales_v2/
 
 Пример решения тестового задания от компании Aviasales.
 Первая проба работы с TypeScript.
